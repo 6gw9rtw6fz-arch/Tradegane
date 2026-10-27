@@ -1,0 +1,1276 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17253a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trade & Till">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Trade & Till</title>
+<style>
+:root {
+  --bg:#0d1420;
+  --panel:#182538;
+  --panel2:#22344a;
+  --border:#3b5069;
+  --text:#f5f7fc;
+  --muted:#aebed2;
+  --blue:#377fc2;
+  --green:#36a878;
+  --red:#d94f5d;
+  --gold:#f3c86b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;font-size:14px}
+button,input{font:inherit}
+button{
+ background:var(--blue);color:white;border:1px solid #6197ca;
+ border-radius:8px;padding:8px 11px;cursor:pointer;
+ transition:filter .15s,transform .15s;
+}
+button:hover{filter:brightness(1.14)}
+button:active{transform:scale(.98)}
+input{background:white;color:#172334;border:1px solid #8292a6;border-radius:6px;padding:7px;width:100%}
+input[type="range"]{padding:0;border:0;background:transparent;accent-color:#36a878;cursor:pointer;min-height:22px}
+h1{font-size:21px;margin:0 0 3px;letter-spacing:.5px}
+h2{font-size:15px;margin:0 0 10px}
+h3{font-size:13px;margin:0 0 7px}
+p{line-height:1.4;margin:0 0 8px}
+.small{font-size:12px;color:var(--muted)}
+.good{color:#8ae3ac}.bad{color:#ff9a9a}.gold{color:var(--gold)}
+.app{height:100dvh;min-height:560px;display:grid;grid-template-rows:auto auto minmax(0,1fr);overflow:hidden}
+header{
+ display:flex;justify-content:space-between;align-items:center;gap:12px;
+ padding:10px 16px;background:linear-gradient(110deg,#17253a,#243d59);
+ border-bottom:1px solid #47617d;box-shadow:0 3px 14px #0003;z-index:2
+}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{
+ width:43px;height:43px;display:grid;place-items:center;border-radius:12px;
+ font-size:25px;background:linear-gradient(145deg,#478ac4,#1c456e);
+ box-shadow:inset 0 1px #ffffff44,0 3px 8px #0004
+}
+.subtitle{font-size:12px;color:#c4d5e8}
+.header-actions{display:flex;gap:6px;flex-wrap:wrap}
+.stats{
+ display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;
+ padding:9px 12px;background:#111b29;border-bottom:1px solid var(--border)
+}
+.stat{
+ min-width:0;padding:8px 10px;border-radius:9px;
+ background:linear-gradient(145deg,#24344a,#1b293c);
+ border:1px solid #354b65;box-shadow:inset 0 1px #ffffff08
+}
+.stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.stat-value{font-size:19px;font-weight:bold;white-space:nowrap}
+main{min-height:0;padding:10px 12px;display:grid;grid-template-rows:minmax(0,1fr) 205px;gap:10px}
+.top-layout{min-height:0;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:10px}
+.panel{
+ min-height:0;overflow:auto;background:linear-gradient(145deg,#1b2a3e,#172335);
+ border:1px solid var(--border);border-radius:11px;padding:12px;
+ box-shadow:0 4px 14px #0002,inset 0 1px #ffffff08
+}
+.shop-panel{display:flex;flex-direction:column;gap:8px;background:linear-gradient(145deg,#20334a,#172335)}
+.panel-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.panel-heading h2{margin:0}
+.pill{background:#2c435d;color:#e0edfb;padding:4px 8px;border-radius:20px;font-size:11px}
+#game{
+ display:block;width:100%;flex:1;min-height:180px;max-height:100%;
+ aspect-ratio:800/430;border:1px solid #7d9ab4;border-radius:10px;
+ background:#dbe4d0;box-shadow:inset 0 2px 8px #0002,0 5px 16px #0003
+}
+.shop-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.move-controls{display:grid;grid-template-columns:repeat(3,34px);gap:3px}
+.move-controls button{padding:5px 0;margin:0}
+.move-controls span{visibility:hidden}
+.action-row{display:flex;gap:5px;flex-wrap:wrap}
+.action-row button{padding:7px 9px}
+.customer-panel{display:flex;flex-direction:column}
+.customer-content{min-height:0;overflow:auto}
+.customer-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.customer-top h2{margin:0}
+.product-title{font-size:18px;font-weight:bold;margin-bottom:5px}
+.result-banner{padding:8px 10px;border-radius:8px;background:#293d53;border:1px solid #3b536c;margin:8px 0;line-height:1.4}
+.progress-track{height:7px;background:#354457;border-radius:10px;overflow:hidden;margin:8px 0}
+.progress-fill{height:7px;background:linear-gradient(90deg,#36a878,#8de6b0);transition:width .2s}
+.test-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:8px 0}
+.test-row{border:1px solid var(--border);background:#202f41;border-radius:7px;padding:7px;font-size:12px}
+.button-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.button-row button{flex:1;min-width:100px}
+.button-secondary{background:#344458;border-color:#53677e}
+.button-green{background:#23774f;border-color:#359968}
+.button-red{background:#803d48;border-color:#a45560}
+.empty{color:var(--muted);padding:10px 0}
+.workspace{min-height:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--border);border-radius:10px;background:var(--panel);box-shadow:0 4px 14px #0002}
+.tabs{display:flex;align-items:center;gap:5px;padding:7px 9px;background:#172438;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.tab{background:transparent;border-color:transparent;color:var(--muted);white-space:nowrap;padding:7px 12px}
+.tab.active{background:var(--blue);color:white;border-color:#568cc4}
+.tab-content{min-height:0;overflow:auto;padding:10px 12px;flex:1}
+.item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.item-card{border:1px solid var(--border);background:linear-gradient(145deg,#24364c,#1d2b3e);padding:9px;border-radius:9px;min-width:0}
+.item-card h3{font-size:14px;margin-bottom:6px}
+.item-card p{margin-bottom:6px}
+.inline-price{display:flex;align-items:center;gap:6px}
+.inline-price input{width:90px}
+.notice{color:var(--muted);font-size:12px}
+.log-entry{font-size:12px;padding-bottom:5px;border-bottom:1px solid #2d3d50;margin-bottom:5px}
+
+/* Non-blocking customer notifications */
+#noticeLayer{
+ position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:20;
+ width:min(480px,calc(100% - 24px));display:none;padding:0;
+ pointer-events:none;
+}
+#noticeLayer.visible{display:block;animation:toastIn .28s cubic-bezier(.2,.8,.2,1)}
+#noticeLayer.fading{animation:toastOut .45s ease-in forwards}
+.notice-card{
+ width:100%;background:linear-gradient(145deg,#263d56f5,#172538f7);
+ border:1px solid #6a87a5;border-radius:14px;overflow:hidden;
+ box-shadow:0 12px 38px #0007,0 2px 8px #0003;backdrop-filter:blur(12px);
+}
+.notice-stripe{height:4px;background:#d94f5d}
+.notice-card.success .notice-stripe{background:#36b77e}
+.notice-card.warning .notice-stripe{background:#e9b84c}
+.notice-inner{padding:14px 18px;display:grid;grid-template-columns:38px minmax(0,1fr);column-gap:12px;align-items:center}
+.notice-icon{font-size:29px;grid-row:1 / span 2;text-align:center}
+.notice-title{font-size:16px;font-weight:bold;margin:0 0 4px;letter-spacing:.3px}
+.notice-message{font-size:13px;line-height:1.45;color:#dce6f2;margin:0}
+.notice-footer{display:none}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-12px) scale(.98)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes toastOut{from{opacity:1;transform:translate(-50%,0) scale(1)}to{opacity:0;transform:translate(-50%,-8px) scale(.985)}}
+
+@media(max-width:800px){
+ .app{height:auto;min-height:100dvh;overflow:visible;display:block}
+ header{padding:10px;flex-wrap:wrap}
+ .stats{grid-template-columns:repeat(3,minmax(0,1fr));padding:8px}
+ .stat-value{font-size:17px}
+ main{display:flex;flex-direction:column;padding:8px}
+ .top-layout{display:flex;flex-direction:column}
+ .shop-panel{min-height:370px}
+ #game{flex:none;height:auto;min-height:0;aspect-ratio:800/430}
+ .customer-panel{min-height:260px}
+ .workspace{min-height:230px;overflow:visible}
+ .tab-content{overflow:visible}
+}
+@media(max-width:430px){
+ .subtitle{display:none}
+ .stats{gap:5px}
+ .stat{padding:7px}
+ .stat-value{font-size:16px}
+ .test-list{grid-template-columns:1fr}
+}
+
+/* Mobile and home-screen refinements */
+html{min-height:100%;background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:100%;overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent}
+button,select,input{touch-action:manipulation}
+button{min-height:40px}
+#game{touch-action:pan-y;image-rendering:auto}
+@media(max-width:800px){
+ body{font-size:15px}
+ .app{padding-bottom:env(safe-area-inset-bottom)}
+ header{padding-top:max(10px,env(safe-area-inset-top));gap:9px}
+ .header-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+ .header-actions button{min-height:42px}
+ .brand{min-width:0}
+ h1{font-size:20px}
+ .stats{position:relative;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .stat{padding:8px 7px}
+ .stat-label{font-size:10px}
+ .stat-value{font-size:16px;white-space:normal;overflow-wrap:anywhere}
+ main{gap:10px;padding:8px}
+ .top-layout{gap:10px}
+ .panel{padding:10px;border-radius:12px}
+ .shop-panel{min-height:0}
+ #game{width:100%;height:auto;aspect-ratio:800/430;min-height:0;flex:none}
+ .shop-controls{align-items:center}
+ .move-controls{grid-template-columns:repeat(3,42px);gap:4px}
+ .move-controls button{min-height:42px;font-size:17px}
+ .action-row{flex:1;justify-content:flex-end}
+ .action-row button{min-height:42px}
+ .customer-panel{min-height:0;max-height:none}
+ .customer-content{overflow:visible}
+ .workspace{min-height:260px}
+ .tabs{padding:7px;gap:4px;scrollbar-width:thin}
+ .tab{padding:9px 11px;min-height:40px}
+ .tab-content{padding:10px;overflow:visible}
+ .item-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+ .item-card{padding:11px}
+ .item-card button,.button-row button{min-height:42px}
+ .button-row{gap:7px}
+ .button-row button{min-width:0}
+ input,select{font-size:16px;min-height:40px}
+ .inline-price input{width:100px}
+ #noticeLayer{top:calc(env(safe-area-inset-top) + 10px);width:calc(100% - 20px)}
+ .notice-inner{padding:12px 14px;grid-template-columns:32px minmax(0,1fr);gap:9px}
+ .notice-icon{font-size:25px}
+ .notice-title{font-size:15px}
+ .notice-message{font-size:13px}
+}
+@media(max-width:430px){
+ .subtitle{display:none}
+ .stats{gap:5px;padding:7px}
+ .stat-value{font-size:15px}
+ .test-list{grid-template-columns:1fr}
+ .shop-controls{align-items:flex-start}
+ .move-controls{grid-template-columns:repeat(3,38px)}
+ .action-row{width:100%;justify-content:stretch}
+ .action-row button{flex:1}
+ .product-title{font-size:17px}
+}
+@media(display-mode:standalone){header{padding-top:max(10px,env(safe-area-inset-top))}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand">
+  <div class="logo">📱</div>
+  <div><h1>TRADE & TILL</h1><div class="subtitle">Electronics shop management</div></div>
+ </div>
+ <div class="header-actions">
+  <button data-action="save">💾 Save</button>
+  <button class="button-secondary" data-action="day">Close day</button>
+ </div>
+</header>
+
+<section class="stats">
+ <div class="stat"><div class="stat-label">💷 CASH</div><div class="stat-value" id="cash">£300</div></div>
+ <div class="stat"><div class="stat-label">⭐ REPUTATION</div><div class="stat-value" id="rep">50</div></div>
+ <div class="stat"><div class="stat-label">🧾 TILLS</div><div class="stat-value" id="tills">1 / 3</div></div>
+ <div class="stat"><div class="stat-label">📦 STOCK</div><div class="stat-value" id="stockCount">0</div></div>
+ <div class="stat"><div class="stat-label">💰 PROFIT</div><div class="stat-value" id="profit">£0</div></div>
+ <div class="stat"><div class="stat-label">📅 DAY</div><div class="stat-value" id="day">1</div></div>
+</section>
+
+<main>
+ <div class="top-layout">
+  <section class="panel shop-panel">
+   <div class="panel-heading"><h2>🏬 Your shop</h2><span class="pill">OPEN</span></div>
+   <canvas id="game" width="1200" height="645"></canvas>
+   <div class="shop-controls">
+    <div class="move-controls">
+     <span></span><button data-move="up">⬆️</button><span></span>
+     <button data-move="left">⬅️</button><button data-move="down">⬇️</button><button data-move="right">➡️</button>
+    </div>
+    <div class="action-row"><button data-action="interact">Interact</button><button data-action="call">+ Customer</button></div>
+   </div>
+   <div class="notice">Move with WASD or arrow keys. Press E to interact.</div>
+  </section>
+
+  <section class="panel customer-panel">
+   <div class="customer-top"><h2>🔍 Customer & testing</h2><span class="pill" id="customerStatus">NO CUSTOMER</span></div>
+   <div class="customer-content" id="customerPanel"><p class="empty">Call a customer to start.</p></div>
+  </section>
+ </div>
+
+ <section class="workspace">
+  <div class="tabs">
+   <button class="tab active" data-tab="stock">📦 Stockroom</button>
+   <button class="tab" data-tab="buy">🛒 Buy stock</button>
+   <button class="tab" data-tab="upgrades">⬆️ Upgrades</button>
+   <button class="tab" data-tab="log">📋 Shop log</button>
+  </div>
+  <div class="tab-content" id="tabContent"></div>
+ </section>
+</main>
+</div>
+
+<div id="noticeLayer" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+ <div class="notice-card" id="noticeCard">
+  <div class="notice-stripe"></div>
+  <div class="notice-inner">
+   <div class="notice-icon" id="noticeIcon">⚠️</div>
+   <div class="notice-title" id="noticeTitle">Customer update</div>
+   <div class="notice-message" id="noticeMessage"></div>
+   <div class="notice-footer">
+    <span class="notice-hint">Trade & Till · Customer service</span>
+    <button id="noticeButton">Continue</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script>
+"use strict";
+
+const products=[
+ {name:"Smartphone",icon:"📱",cost:65,market:150,tests:["Screen and touch","Cameras","Charging port","Battery"]},
+ {name:"Games console",icon:"🎮",cost:80,market:180,tests:["Power and startup","Controller connection","Game test"]},
+ {name:"Laptop",icon:"💻",cost:115,market:250,tests:["Screen and keyboard","Battery and charger","Performance test"]},
+ {name:"Headphones",icon:"🎧",cost:25,market:70,tests:["Left and right audio","Buttons and controls","Charging"]}
+];
+
+const state={
+ cash:300,reputation:50,tills:1,staff:0,profit:0,day:1,served:0,
+ inventory:[],customer:null,nextId:1,expanded:false,staffTills:[],
+ player:{x:390,y:350},currentTab:"stock",lastMessage:""
+};
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+const keys={};
+let touchMoveTimer=null;
+let logEntries=["Welcome to Trade & Till! Your shop is open."];
+let noticeTimer=null;
+let arrivalTimer=null;
+let staffTimer=null;
+let storeCustomers=[]; // brief visual visitors handled by automated tills
+let noticeOpen=false; // kept for compatibility; notifications no longer pause play
+
+function money(n){return "£"+Math.round(n).toLocaleString("en-GB")}
+function escapeHTML(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function randomProduct(){const p=products[Math.floor(Math.random()*products.length)];return {...p,tests:[...p.tests]}}
+
+function showNotice(title,message,type="warning",icon="⚠️"){
+ const layer=document.getElementById("noticeLayer");
+ const card=document.getElementById("noticeCard");
+ document.getElementById("noticeTitle").textContent=title;
+ document.getElementById("noticeMessage").textContent=message;
+ document.getElementById("noticeIcon").textContent=icon;
+ card.className="notice-card "+type;
+ layer.classList.remove("fading");
+ layer.classList.add("visible");
+ noticeOpen=false; // toast notifications never block movement or clicks
+ if(noticeTimer)clearTimeout(noticeTimer);
+ const important=/REJECTED|REFUSED|COMPLETED|ACCEPTED|SAVED|NEW CUSTOMER|NEW DAY|EXPANDED|UPGRADED/i.test(title);
+ noticeTimer=setTimeout(()=>{
+   layer.classList.add("fading");
+   setTimeout(()=>{
+     if(layer.classList.contains("fading")){
+       layer.classList.remove("visible","fading");
+     }
+   },460);
+ },important?4800:3400);
+}
+
+function closeNotice(){
+ const layer=document.getElementById("noticeLayer");
+ layer.classList.remove("visible","fading");
+ noticeOpen=false;
+ if(noticeTimer)clearTimeout(noticeTimer);
+ noticeTimer=null;
+}
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closeNotice();
+});
+
+function addLog(message){
+ logEntries.unshift(message);
+ if(logEntries.length>100)logEntries.pop();
+ state.lastMessage=message;
+ renderTab();
+}
+
+function callCustomer(){
+ if(state.customer){
+  addLog("Finish serving your current customer before calling another.");
+  showNotice("CUSTOMER WAITING","You already have a customer at the counter. Finish the current interaction first.","warning","🧍");
+  return;
+ }
+ // When stock is running low, more walk-ins bring devices to trade in so the
+ // player has a fair chance to replenish stock instead of waiting on buyers.
+ const tradeChance=state.inventory.length===0?0.65:state.inventory.length<=2?0.48:0.30;
+ const trade=Math.random()<tradeChance;
+ const p=randomProduct();
+ state.customer={
+  id:state.nextId++,
+  name:["Alex","Jamie","Sam","Taylor","Morgan","Charlie"][Math.floor(Math.random()*6)],
+  type:trade?"trade":"sale",product:p,inspected:false,testIndex:0,
+  results:[],grade:null,suggestedOffer:0,offerMade:false,lastResult:""
+ };
+ addLog(state.customer.name+(trade?" arrived with a "+p.name+" to trade in.":" arrived looking to buy a "+p.name+"."));
+ updateUI();
+ showNotice("NEW CUSTOMER",trade
+  ?state.customer.name+" has brought in a "+p.name+". Inspect it, run the tests and make a trade-in offer."
+  :state.customer.name+" is looking to buy a "+p.name+". Check your stock and offer it at a price they might accept.",
+  "success",trade?"📦":"🛍️");
+}
+
+function interact(){
+ if(!state.customer){
+  addLog("No active customer. Call someone first.");
+  showNotice("NO CUSTOMER","Call a customer before interacting with the service desk.","warning","🧍");
+  return;
+ }
+ addLog("Now serving "+state.customer.name+".");
+ updateUI();
+}
+
+function finishCustomer(message){
+ if(message){logEntries.unshift(message);state.lastMessage=message}
+ state.customer=null;
+ updateUI();
+ // Restock-focused days bring the next customer sooner when there is little to sell.
+ const nextDelay=state.inventory.length===0?5200:state.inventory.length<=2?6800:8500;
+ scheduleCustomerArrival(nextDelay);
+}
+
+function scheduleCustomerArrival(delay=11000){
+ if(arrivalTimer)clearTimeout(arrivalTimer);
+ arrivalTimer=setTimeout(()=>{
+  if(!state.customer){
+   callCustomer();
+  }else{
+   scheduleCustomerArrival(8000);
+  }
+ },delay);
+}
+
+// Inspection and testing
+function inspectExterior(){
+ const c=state.customer;
+ if(!c||c.type!=="trade")return;
+ if(c.inspected){
+  addLog("The exterior has already been inspected.");
+  return;
+ }
+ c.inspected=true;
+ c.lastResult="Exterior inspection complete. You can now run tests.";
+ addLog("Inspected the "+c.product.name+" exterior for cracks, dents and damage.");
+ updateUI();
+ showNotice("INSPECTION STARTED","The exterior inspection is complete. Run each technical test to grade the item.","success","🔎");
+}
+
+function runTest(){
+ const c=state.customer;
+ if(!c||c.type!=="trade"){
+  addLog("There is no trade-in item to test.");
+  showNotice("NO ITEM TO TEST","Call a trade-in customer before running tests.","warning","🧪");
+  return;
+ }
+ if(!c.inspected){
+  addLog("Inspect the exterior before testing.");
+  showNotice("INSPECTION REQUIRED","Inspect the exterior first, then you can run the technical tests.","warning","🔎");
+  updateUI();
+  return;
+ }
+ if(c.grade){
+  addLog("All tests are complete. Choose an offer.");
+  showNotice("TESTING COMPLETE","All tests are finished. The item has grade "+c.grade+". Choose your trade-in offer.","success","✅");
+  updateUI();
+  return;
+ }
+
+ const testName=c.product.tests[c.testIndex];
+ if(!testName){finishInspection(c);updateUI();return}
+
+ const passed=Math.random()<0.82;
+ c.results.push({name:testName,passed});
+ c.testIndex++;
+ c.lastResult=testName+": "+(passed?"PASS":"FAIL");
+ addLog("Test "+c.testIndex+"/"+c.product.tests.length+": "+testName+" — "+(passed?"PASS":"FAIL"));
+
+ if(c.testIndex>=c.product.tests.length){
+  finishInspection(c);
+  updateUI();
+  showNotice("TESTING COMPLETE","The "+c.product.name+" has been graded "+c.grade+". Suggested trade-in offer: "+money(c.suggestedOffer)+". Choose an offer to continue.","success","🧪");
+ }else{
+  updateUI();
+  showNotice(passed?"TEST PASSED":"FAULT DETECTED",
+   testName+(passed?" passed successfully.":" failed. This fault has affected the item's grade.")+
+   " Next test: "+c.product.tests[c.testIndex]+".",
+   passed?"success":"warning",passed?"✅":"⚠️");
+ }
+}
+
+function finishInspection(c){
+ const failures=c.results.filter(r=>!r.passed).length;
+ c.grade=failures===0?"A":failures===1?"B":"C";
+ const multiplier=c.grade==="A"?1:c.grade==="B"?0.72:0.45;
+ c.suggestedOffer=Math.round(c.product.cost*multiplier);
+ c.lastResult="Testing complete — grade "+c.grade+". Suggested offer: "+money(c.suggestedOffer);
+ addLog("Testing complete. Grade "+c.grade+". Suggested trade-in offer: "+money(c.suggestedOffer)+".");
+}
+
+function makeOffer(percent){
+ const c=state.customer;
+ if(!c||c.type!=="trade")return;
+ if(!c.grade){
+  addLog("Complete all tests before making an offer.");
+  showNotice("TESTING INCOMPLETE","Finish all technical tests before making a trade-in offer.","warning","🧪");
+  return;
+ }
+ if(c.offerMade)return;
+ percent=Math.max(60,Math.min(120,Number(percent)||100));
+ const offer=Math.round(c.suggestedOffer*percent/100);
+ if(state.cash<offer){
+  addLog("Not enough cash. This offer costs "+money(offer)+".");
+  showNotice("NOT ENOUGH CASH","You need "+money(offer)+" to make this offer, but you only have "+money(state.cash)+".","warning","💷");
+  return;
+ }
+ c.offerMade=true;
+ // Higher offers are more attractive to the seller, but cost the shop more.
+ let chance;
+ if(percent<=75)chance=0.65;
+ else if(percent<=100)chance=0.65+(percent-75)*(0.20/25);
+ else chance=Math.min(0.98,0.85+(percent-100)*(0.13/15));
+ if(Math.random()>chance){
+  state.reputation=Math.max(0,state.reputation-1);
+  const itemName=c.product.name;
+  const customerName=c.name;
+  addLog(customerName+" rejected your trade-in offer of "+money(offer)+" ("+Math.round(percent)+"% of the suggested offer).");
+  finishCustomer(customerName+" rejected your offer.");
+  showNotice("TRADE-IN OFFER REJECTED",
+   customerName+" refused your offer of "+money(offer)+" for the "+itemName+". Try a more generous offer next time. Your reputation decreased slightly.",
+   "warning","🙅");
+  return;
+ }
+ state.cash-=offer;
+ state.inventory.push({id:state.nextId++,name:c.product.name,icon:c.product.icon,cost:offer,market:c.product.market,price:c.product.market,grade:c.grade});
+ state.reputation=Math.min(100,state.reputation+2);
+ state.served++;
+ const itemName=c.product.name;
+ const customerName=c.name;
+ finishCustomer(customerName+" accepted! Bought a grade "+c.grade+" "+itemName+" for "+money(offer)+".");
+ showNotice("TRADE-IN ACCEPTED",customerName+" accepted your offer of "+money(offer)+". The "+itemName+" is now in your stockroom.","success","🤝");
+}
+
+// Stock purchasing
+function buyStock(index){
+ const p=products[index];
+ if(!p)return;
+ if(state.cash<p.cost){
+  addLog("You need "+money(p.cost)+" to buy a "+p.name+".");
+  showNotice("NOT ENOUGH CASH","You need "+money(p.cost)+" to purchase a "+p.name+".","warning","💷");
+  return;
+ }
+ state.cash-=p.cost;
+ state.inventory.push({id:state.nextId++,name:p.name,icon:p.icon,cost:p.cost,market:p.market,price:p.market,grade:"A"});
+ addLog("Bought a "+p.name+" for "+money(p.cost)+".");
+ updateUI();
+ showNotice("STOCK PURCHASED","You bought a "+p.name+" for "+money(p.cost)+". It is now available in your stockroom.","success","📦");
+}
+
+function changePrice(id,value){
+ const item=state.inventory.find(i=>i.id===id);
+ if(!item)return;
+ const price=Number(value);
+ if(!Number.isFinite(price)||price<1||price>100000){
+  addLog("Please enter a valid sale price.");
+  updateUI();
+  return;
+ }
+ item.price=Math.round(price);
+ updateUI();
+}
+
+// Customer purchase and price refusal
+function serveSale(){
+ const c=state.customer;
+ if(!c||c.type!=="sale")return;
+
+ const index=state.inventory.findIndex(i=>i.name===c.product.name);
+ if(index<0){
+  const customerName=c.name;
+  const itemName=c.product.name;
+  addLog(customerName+" left because you didn't have a "+itemName+" in stock.");
+  finishCustomer(customerName+" left without buying anything.");
+  showNotice("CUSTOMER LEFT",""+customerName+" wanted a "+itemName+", but you don't have one in stock. They left without buying anything.","warning","🚶");
+  return;
+ }
+
+ const item=state.inventory[index];
+ const ratio=item.price/item.market;
+
+ let acceptanceChance;
+ if(ratio<=0.90)acceptanceChance=0.99;
+ else if(ratio<=1.00)acceptanceChance=0.96;
+ else if(ratio<=1.05)acceptanceChance=0.88;
+ else if(ratio<=1.10)acceptanceChance=0.75;
+ else if(ratio<=1.20)acceptanceChance=0.50;
+ else if(ratio<=1.30)acceptanceChance=0.25;
+ else if(ratio<=1.50)acceptanceChance=0.08;
+ else acceptanceChance=0;
+
+ if(Math.random()>=acceptanceChance){
+  state.reputation=Math.max(0,state.reputation-1);
+  const customerName=c.name;
+  const itemName=item.name;
+  const askingPrice=item.price;
+  const marketPrice=item.market;
+  addLog(customerName+" rejected the "+itemName+" at "+money(askingPrice)+". They thought the price was too high.");
+  finishCustomer(customerName+" refused the asking price.");
+  showNotice("CUSTOMER REFUSED YOUR PRICE",
+   customerName+" refused to buy the "+itemName+" for "+money(askingPrice)+". The typical market value is "+money(marketPrice)+", and they felt your price was too high. Your reputation decreased slightly.",
+   "warning","💸");
+  return;
+ }
+
+ state.cash+=item.price;
+ state.profit+=item.price-item.cost;
+ state.inventory.splice(index,1);
+ state.reputation=Math.min(100,state.reputation+1);
+ state.served++;
+ const customerName=c.name;
+ const itemName=item.name;
+ const soldPrice=item.price;
+ const earned=item.price-item.cost;
+ finishCustomer("Sale completed! "+itemName+" sold to "+customerName+" for "+money(soldPrice)+". Profit: "+money(earned)+".");
+ showNotice("SALE COMPLETED",customerName+" bought the "+itemName+" for "+money(soldPrice)+". Your profit on this sale is "+money(earned)+".","success","🛍️");
+}
+
+// Upgrades
+function upgradeTills(){
+ if(state.tills>=3){addLog("All three tills are already unlocked.");return}
+ const cost=state.tills===1?450:900;
+ if(state.cash<cost){
+  addLog("You need "+money(cost)+" for the next till.");
+  showNotice("NOT ENOUGH CASH","You need "+money(cost)+" to upgrade your tills.","warning","💷");
+  return;
+ }
+ state.cash-=cost;
+ state.tills++;
+ addLog("Upgrade complete! You now have "+state.tills+" tills. Hire staff from the Upgrades tab to run the extra till.");
+ updateUI();
+ showNotice("TILL UPGRADED","Your shop now has "+state.tills+" tills. Hire a staff member to run this extra till.","success","🧾");
+}
+
+function getOccupiedStaffTills(exceptIndex=-1){
+ return state.staffTills.filter((till,index)=>index!==exceptIndex&&Number(till)>=2).map(Number);
+}
+
+function hireStaff(){
+ const hireCost=200;
+ if(state.staff>=state.tills-1){
+  showNotice("NO EMPTY STAFFED TILL","Unlock an extra till before hiring staff. Each assistant needs their own extra till.","warning","🧑‍💼");
+  return;
+ }
+ if(state.cash<hireCost){
+  showNotice("NOT ENOUGH CASH","Hiring a till assistant costs "+money(hireCost)+". You currently have "+money(state.cash)+".","warning","💷");
+  return;
+ }
+ const occupied=getOccupiedStaffTills();
+ let assignedTill=0;
+ for(let till=2;till<=state.tills;till++){if(!occupied.includes(till)){assignedTill=till;break}}
+ state.cash-=hireCost;
+ state.staff++;
+ state.staffTills.push(assignedTill);
+ addLog("Hired till assistant #"+state.staff+" for "+money(hireCost)+". Assigned to "+(assignedTill?"till "+assignedTill:"no till yet")+". Daily wages: "+money(state.staff*25)+" for all staff.");
+ updateUI();
+ showNotice("STAFF HIRED",assignedTill?"Your new till assistant is assigned to till "+assignedTill+" and will handle sales automatically.":"Your new assistant is hired. Assign them to an available till in the Upgrades tab.","success","🧑‍💼");
+}
+
+function assignStaff(index,tillValue){
+ if(index<0||index>=state.staff)return;
+ const till=Number(tillValue)||0;
+ if(till!==0&&(till<2||till>state.tills)){
+  showNotice("TILL NOT AVAILABLE","Unlock that till before assigning staff to it.","warning","🧾");
+  renderTab();return;
+ }
+ if(till!==0&&getOccupiedStaffTills(index).includes(till)){
+  showNotice("TILL ALREADY ASSIGNED","Each assistant needs their own till. Choose a different available till.","warning","🧾");
+  renderTab();return;
+ }
+ state.staffTills[index]=till;
+ addLog("Staff member #"+(index+1)+" "+(till?"assigned to till "+till:"taken off the till")+".");
+ updateUI();
+ showNotice(till?"STAFF ASSIGNED":"STAFF UNASSIGNED",till?"Staff member #"+(index+1)+" is now running till "+till+" and will handle sales automatically.":"Staff member #"+(index+1)+" is not running a till and won't make automatic sales.","success","🧑‍💼");
+}
+
+function saleAcceptanceChance(item){
+ const ratio=item.price/item.market;
+ if(ratio<=0.90)return 0.99;
+ if(ratio<=1.00)return 0.96;
+ if(ratio<=1.05)return 0.88;
+ if(ratio<=1.10)return 0.75;
+ if(ratio<=1.20)return 0.50;
+ if(ratio<=1.30)return 0.25;
+ if(ratio<=1.50)return 0.08;
+ return 0;
+}
+
+function showTillCustomer(till,name,message,kind="sale"){
+ const x=475+(till-1)*95+40;
+ const visitor={id:Math.random().toString(36).slice(2),till,name,message,kind,x,y:305,expires:Date.now()+2800};
+ storeCustomers.push(visitor);
+ drawShop();
+ setTimeout(()=>{
+  storeCustomers=storeCustomers.filter(v=>v.id!==visitor.id);
+  drawShop();
+ },2800);
+}
+
+function staffAutoSale(){
+ const activeStaff=state.staffTills.map((till,index)=>({till:Number(till)||0,index})).filter(staff=>staff.till>=2&&staff.till<=state.tills);
+ if(!activeStaff.length)return;
+ let changed=false;
+ for(const staff of activeStaff){
+  // Each staffed till periodically receives a visible walk-in customer, even if
+  // the stockroom is empty. The assistant checks what that customer wants.
+  if(Math.random()>0.92)continue;
+  const buyerName=["Riley","Jordan","Casey","Avery","Robin","Drew","Cameron","Skyler"][Math.floor(Math.random()*8)];
+  const wanted=randomProduct();
+  const index=state.inventory.findIndex(item=>item.name===wanted.name);
+  if(index<0){
+   showTillCustomer(staff.till,buyerName,"No stock: "+wanted.name,"missing");
+   addLog("🤖 Assistant at till "+staff.till+" politely turned away "+buyerName+", who wanted a "+wanted.name+". None were in stock.");
+   changed=true;
+   continue;
+  }
+  const item=state.inventory[index];
+  showTillCustomer(staff.till,buyerName,"Buying "+item.name,"sale");
+  if(Math.random()>=saleAcceptanceChance(item)){
+   state.reputation=Math.max(0,state.reputation-1);
+   addLog("Assistant at till "+staff.till+" couldn't sell the "+item.name+" to "+buyerName+"; the customer declined the price.");
+   changed=true;
+   continue;
+  }
+  const sold=state.inventory[index];
+  state.inventory.splice(index,1);
+  state.cash+=sold.price;
+  const earned=sold.price-sold.cost;
+  state.profit+=earned;
+  state.served++;
+  state.reputation=Math.min(100,state.reputation+1);
+  addLog("🤖 Assistant at till "+staff.till+" sold a "+sold.name+" to "+buyerName+" for "+money(sold.price)+". Profit: "+money(earned)+".");
+  changed=true;
+ }
+ if(changed)updateUI();
+}
+
+function scheduleStaffSales(){
+ if(staffTimer)clearTimeout(staffTimer);
+ staffTimer=setTimeout(()=>{
+  staffAutoSale();
+  scheduleStaffSales();
+ },6500+Math.random()*3500);
+}
+
+function upgradeShop(){
+ if(state.expanded){addLog("Your shop is already expanded.");return}
+ if(state.cash<600){
+  addLog("You need £600 to expand your shop.");
+  showNotice("NOT ENOUGH CASH","You need £600 to expand your shop.","warning","💷");
+  return;
+ }
+ state.cash-=600;
+ state.expanded=true;
+ state.reputation=Math.min(100,state.reputation+5);
+ addLog("Shop expanded! Reputation increased by 5.");
+ updateUI();
+ showNotice("SHOP EXPANDED","Your shop expansion is complete. Reputation increased by 5.","success","🏬");
+}
+
+function endDay(){
+ if(state.customer){
+  addLog("Finish serving your customer before closing.");
+  showNotice("CUSTOMER STILL WAITING","Finish the current customer interaction before closing the shop.","warning","🧍");
+  return;
+ }
+ const wages=state.staff*25;
+ const bonus=Math.floor(state.reputation/10)*5;
+ if(state.cash>=wages){
+  state.cash-=wages;
+  addLog("Paid staff wages of "+money(wages)+" for the day.");
+ }else if(wages>0){
+  state.cash=0;
+  state.reputation=Math.max(0,state.reputation-2);
+  addLog("You couldn't fully cover staff wages of "+money(wages)+". Cash is now £0 and reputation fell by 2.");
+ }
+ state.day++;
+ state.cash+=bonus;
+ addLog("Day "+state.day+" begins. Reputation bonus: "+money(bonus)+".");
+ updateUI();
+ showNotice("NEW DAY","Day "+state.day+" has begun. Staff wages: "+money(wages)+". Reputation bonus: "+money(bonus)+".","success","🌅");
+}
+
+// Customer interface
+function renderCustomer(){
+ const box=document.getElementById("customerPanel");
+ const status=document.getElementById("customerStatus");
+ const c=state.customer;
+
+ if(!c){
+  status.textContent="NO CUSTOMER";
+  box.innerHTML='<p class="empty">Call a customer to start. Stock can only be sold to a customer looking for that product.</p><button data-action="call">+ Call customer</button>';
+  return;
+ }
+
+ status.textContent=c.type==="trade"?"TRADE-IN":"SALE";
+ let html='<div class="product-title">'+c.product.icon+" "+escapeHTML(c.product.name)+'</div>';
+ html+='<p class="small">Customer: '+escapeHTML(c.name)+(c.type==="trade"?" · Trade-in":" · Purchase")+'</p>';
+
+ if(c.type==="trade"){
+  html+='<p class="small">Typical market value: <b>'+money(c.product.market)+'</b></p>';
+  if(!c.inspected){
+   html+='<div class="result-banner">Step 1 — Inspect the exterior before testing.</div><button data-action="inspect">🔎 Inspect exterior</button>';
+  }else{
+   html+='<div class="result-banner good">✓ Exterior inspected</div>';
+   html+='<div class="panel-heading"><h3>Technical tests</h3><span class="pill">'+c.testIndex+' / '+c.product.tests.length+'</span></div>';
+   html+='<div class="progress-track"><div class="progress-fill" style="width:'+Math.round(c.testIndex/c.product.tests.length*100)+'%"></div></div>';
+   if(c.results.length){
+    html+='<div class="test-list">';
+    for(const r of c.results)html+='<div class="test-row '+(r.passed?'good':'bad')+'">'+(r.passed?'✓ PASS':'✕ FAIL')+'<br>'+escapeHTML(r.name)+'</div>';
+    html+='</div>';
+   }
+   if(!c.grade){
+    html+='<div class="result-banner">Next test: <b>'+escapeHTML(c.product.tests[c.testIndex])+'</b></div>';
+    html+='<button class="full" data-action="test">▶ Run next test</button>';
+   }
+  }
+
+  if(c.lastResult)html+='<div class="result-banner"><b>Latest update</b><br>'+escapeHTML(c.lastResult)+'</div>';
+  if(c.grade){
+   html+='<div class="result-banner"><b>Final grade: '+c.grade+'</b><br>Suggested offer: <b>'+money(c.suggestedOffer)+'</b></div>';
+   if(!c.offerMade)html+='<div class="result-banner"><label for="offerSlider"><b>Trade-in offer:</b> <span id="offerPercentLabel">100%</span> · <b id="offerAmountLabel">'+money(c.suggestedOffer)+'</b></label><input id="offerSlider" type="range" min="60" max="120" step="5" value="100" data-offer-slider style="width:100%;margin:10px 0"><div class="small" id="offerHint">Slide left to offer less, or right to improve your chance of acceptance.</div><button class="button-green" data-action="makeOffer" style="margin-top:8px;width:100%">Make offer</button></div>';
+  }
+ }else{
+  html+='<p>Customer is looking for: <b>'+escapeHTML(c.product.name)+'</b></p>';
+  const item=state.inventory.find(i=>i.name===c.product.name);
+  if(item){
+   const ratio=item.price/item.market;
+   const markup=Math.round((ratio-1)*100);
+   html+='<div class="result-banner">Your price: <b>'+money(item.price)+'</b><br>Market value: '+money(item.market)+'<br>Price difference: '+(markup>0?"+":"")+markup+'%</div>';
+   if(ratio>1.1)html+='<p class="gold small">⚠ This price may put the customer off.</p>';
+   html+='<button class="full button-green" data-action="serveSale">Offer item to customer</button>';
+  }else{
+   html+='<div class="result-banner gold">You do not have this item in stock. Buy it from the Buy Stock tab.</div>';
+  }
+  html+='<p class="small">Customers may refuse prices that are too high.</p>';
+ }
+ html+='<div class="button-row"><button class="button-secondary" data-action="finish">Finish interaction</button></div>';
+ box.innerHTML=html;
+}
+
+// Bottom tabs
+function renderTab(){
+ const box=document.getElementById("tabContent");
+ document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===state.currentTab));
+
+ if(state.currentTab==="stock"){
+  if(!state.inventory.length){
+   box.innerHTML='<p class="empty">Your stockroom is empty. Buy stock or accept a trade-in.</p>';
+   return;
+  }
+  box.innerHTML='<div class="item-grid">'+state.inventory.map(item=>
+   '<div class="item-card"><h3>'+item.icon+' '+escapeHTML(item.name)+'</h3>'+
+   '<p class="small">Grade '+item.grade+' · Your cost: '+money(item.cost)+'</p>'+
+   '<p class="small">Market value: '+money(item.market)+'</p>'+
+   '<div class="inline-price"><label for="price'+item.id+'">Price</label><input id="price'+item.id+'" type="number" min="1" max="100000" data-price-id="'+item.id+'" value="'+item.price+'"></div>'+
+   '<p class="small">Potential profit: '+money(item.price-item.cost)+'</p></div>'
+  ).join('')+'</div><p class="notice">Items can only be sold to customers who are looking for them.</p>';
+ }
+
+ if(state.currentTab==="buy"){
+  box.innerHTML='<div class="item-grid">'+products.map((p,i)=>
+   '<div class="item-card"><h3>'+p.icon+' '+p.name+'</h3><p class="small">Purchase cost: '+money(p.cost)+'</p><p class="small">Typical market price: '+money(p.market)+'</p><p class="good">Potential margin: '+money(p.market-p.cost)+'</p><button data-action="buy" data-index="'+i+'">Buy stock</button></div>'
+  ).join('')+'</div>';
+ }
+
+ if(state.currentTab==="upgrades"){
+  let html='<div class="item-grid">';
+  if(state.tills<3){
+   const cost=state.tills===1?450:900;
+   html+='<div class="item-card"><h3>🧾 Extra till</h3><p class="small">Unlock till '+(state.tills+1)+' of 3.</p><p>Cost: <b>'+money(cost)+'</b></p><button data-action="tills">Upgrade tills</button></div>';
+  }else html+='<div class="item-card"><h3>🧾 All tills unlocked</h3><p class="good">You own all three tills.</p></div>';
+
+  const availableStaff=Math.max(0,state.tills-1-state.staff);
+  html+='<div class="item-card"><h3>🧑‍💼 Automated till staff</h3><p class="small">Assign each assistant to a different extra till. Assigned staff will handle walk-in sales while you inspect and test trade-ins.</p><p>Hired: <b>'+state.staff+'</b> · Available staff slots: <b>'+availableStaff+'</b></p><p>Hire cost: <b>£200</b> each</p><p>Daily wages: <b>£25</b> per assistant</p>';
+  if(availableStaff>0)html+='<button data-action="hireStaff">Hire till assistant</button>';
+  else html+='<button class="button-secondary" disabled>Unlock another till first</button>';
+  if(state.staff){
+   html+='<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px"><h3>Staff assignments</h3>';
+   for(let i=0;i<state.staff;i++){
+    const assigned=Number(state.staffTills[i])||0;
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0"><label for="staffTill'+i+'">Assistant #'+(i+1)+'</label><select id="staffTill'+i+'" data-staff-index="'+i+'" style="max-width:180px;background:#fff;color:#172334;border-radius:6px;padding:7px"><option value="0"'+(assigned===0?' selected':'')+'>Not assigned</option>';
+    for(let till=2;till<=state.tills;till++){
+     const occupied=getOccupiedStaffTills(i).includes(till);
+     html+='<option value="'+till+'"'+(assigned===till?' selected':'')+((occupied&&assigned!==till)?' disabled':'')+'>Till '+till+(occupied&&assigned!==till?' (assigned)':'')+'</option>';
+    }
+    html+='</select></div><p class="small">'+(assigned?'🟢 Running till '+assigned+' · automatic sales enabled':'⚪ Not working a till · no automatic sales')+'</p>';
+   }
+   html+='</div>';
+  }
+  html+='</div>';
+
+  if(!state.expanded)html+='<div class="item-card"><h3>🏬 Expand shop</h3><p class="small">Grow your store and improve reputation.</p><p>Cost: <b>£600</b></p><button data-action="expand">Expand shop</button></div>';
+  else html+='<div class="item-card"><h3>🏬 Shop expanded</h3><p class="good">Expansion complete!</p></div>';
+  box.innerHTML=html+'</div>';
+ }
+
+ if(state.currentTab==="log"){
+  box.innerHTML='<div>'+logEntries.map(e=>'<div class="log-entry">'+escapeHTML(e)+'</div>').join('')+'</div>'+
+   '<div class="button-row"><button data-action="save">💾 Save game</button><button class="button-red" data-action="reset">Reset game</button></div>';
+ }
+}
+
+// Enhanced shop graphics
+function roundedRect(x,y,w,h,r,fill,stroke){
+ ctx.beginPath();
+ ctx.roundRect(x,y,w,h,r);
+ if(fill){ctx.fillStyle=fill;ctx.fill()}
+ if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}
+}
+
+function drawShelf(x,label,icon,accent){
+ // Shelf shadow
+ ctx.save();
+ ctx.shadowColor="#18202b55";
+ ctx.shadowBlur=9;
+ ctx.shadowOffsetY=5;
+ const wood=ctx.createLinearGradient(x,80,x+210,158);
+ wood.addColorStop(0,"#795039");wood.addColorStop(.5,"#a06b45");wood.addColorStop(1,"#69442f");
+ roundedRect(x,80,210,80,5,wood,"#5d3b2a");
+ ctx.restore();
+
+ // Header panel and shelf lip
+ const header=ctx.createLinearGradient(x,85,x,110);
+ header.addColorStop(0,"#f9edda");header.addColorStop(1,"#dfcdb2");
+ roundedRect(x+5,85,200,22,3,header,"#b9a486");
+ ctx.fillStyle="#34475b";ctx.font="bold 13px Arial";ctx.fillText(label,x+12,100);
+
+ // Display lighting
+ const glow=ctx.createLinearGradient(x,111,x,145);
+ glow.addColorStop(0,"#fff7dd");glow.addColorStop(1,"#c6d4d0");
+ ctx.fillStyle=glow;ctx.fillRect(x+5,111,200,39);
+
+ // Individual display stands
+ for(let i=0;i<3;i++){
+  const px=x+20+i*63;
+  roundedRect(px,119,48,28,4,"#e6e8df","#aab6b4");
+  ctx.fillStyle="#ffffff66";ctx.fillRect(px+3,122,42,2);
+  ctx.font="22px Arial";ctx.textAlign="center";ctx.fillText(icon,px+24,141);
+ }
+ ctx.textAlign="left";
+
+ // Front edge
+ const edge=ctx.createLinearGradient(x,151,x,161);
+ edge.addColorStop(0,"#b98457");edge.addColorStop(1,"#69432e");
+ roundedRect(x-2,151,214,9,2,edge,"#563722");
+}
+
+function drawPerson(x,y,label,shirt,selected=false,isCustomer=false){
+ ctx.save();
+
+ // Character shadow
+ ctx.fillStyle="#1a273744";
+ ctx.beginPath();ctx.ellipse(x,y+3,17,6,0,0,Math.PI*2);ctx.fill();
+
+ // Selection ring
+ if(selected){
+  ctx.strokeStyle="#eec95d";ctx.lineWidth=3;
+  ctx.beginPath();ctx.ellipse(x,y-8,22,25,0,0,Math.PI*2);ctx.stroke();
+ }
+
+ // Legs
+ ctx.fillStyle="#27364a";
+ roundedRect(x-9,y-3,7,17,3,"#293a50");
+ roundedRect(x+2,y-3,7,17,3,"#293a50");
+
+ // Shoes
+ roundedRect(x-11,y+11,9,5,2,"#172333");
+ roundedRect(x+2,y+11,9,5,2,"#172333");
+
+ // Arms and body
+ roundedRect(x-16,y-20,6,22,3,shirt);
+ roundedRect(x+10,y-20,6,22,3,shirt);
+ const body=ctx.createLinearGradient(x-10,y-20,x+10,y+4);
+ body.addColorStop(0,shirt);body.addColorStop(1,"#263a50");
+ roundedRect(x-11,y-22,22,25,5,body,"#182638");
+
+ // Neck
+ ctx.fillStyle="#e6b38d";ctx.fillRect(x-3,y-27,6,7);
+
+ // Face
+ const skin=ctx.createRadialGradient(x-3,y-34,1,x,y-32,12);
+ skin.addColorStop(0,"#ffdbb9");skin.addColorStop(1,"#d99d77");
+ ctx.fillStyle=skin;ctx.beginPath();ctx.ellipse(x,y-32,9,11,0,0,Math.PI*2);ctx.fill();
+
+ // Hair
+ ctx.fillStyle=isCustomer?"#55392c":"#40352c";
+ ctx.beginPath();ctx.arc(x,y-36,9,Math.PI,Math.PI*2);ctx.lineTo(x+8,y-31);ctx.lineTo(x+5,y-35);ctx.lineTo(x-6,y-35);ctx.lineTo(x-8,y-30);ctx.closePath();ctx.fill();
+
+ // Face details
+ ctx.fillStyle="#263343";
+ ctx.beginPath();ctx.arc(x-3,y-32,1,0,Math.PI*2);ctx.arc(x+3,y-32,1,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle="#995e4d";ctx.lineWidth=1;
+ ctx.beginPath();ctx.arc(x,y-29,3,.2,Math.PI-.2);ctx.stroke();
+
+ // Name tag
+ ctx.font="bold 11px Arial";ctx.textAlign="center";
+ const width=Math.max(34,ctx.measureText(label).width+12);
+ roundedRect(x-width/2,y+19,width,16,5,"#f3f5f7","#b8c7d7");
+ ctx.fillStyle="#1b2b3e";ctx.fillText(label,x,y+30);
+ ctx.textAlign="left";
+ ctx.restore();
+}
+
+function drawShop(){
+ // Render the 800×430 scene on a 1200×645 backing canvas for sharper graphics.
+ ctx.setTransform(canvas.width/800,0,0,canvas.height/430,0,0);
+ ctx.clearRect(0,0,800,430);
+
+ // Floor gradient
+ const floor=ctx.createLinearGradient(0,0,0,430);
+ floor.addColorStop(0,"#e7e9d8");floor.addColorStop(1,"#c8d4c0");
+ ctx.fillStyle=floor;ctx.fillRect(0,0,800,430);
+
+ // Perspective-inspired floor tiles
+ ctx.strokeStyle="#b9c7b1";ctx.lineWidth=1;
+ for(let x=0;x<800;x+=40){
+  ctx.beginPath();ctx.moveTo(x,55);ctx.lineTo(x,430);ctx.stroke();
+ }
+ for(let y=55;y<430;y+=38){
+  ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(800,y);ctx.stroke();
+ }
+
+ // Back wall
+ const wall=ctx.createLinearGradient(0,0,0,58);
+ wall.addColorStop(0,"#304c68");wall.addColorStop(1,"#1b2d43");
+ ctx.fillStyle=wall;ctx.fillRect(0,0,800,58);
+ ctx.fillStyle="#ffffff";ctx.font="bold 23px Arial";ctx.fillText("TRADE & TILL",20,36);
+ ctx.fillStyle="#9db9d2";ctx.font="12px Arial";ctx.fillText("TECH EXCHANGE  •  BUY  •  SELL",250,34);
+
+  // Wall trim, framed promotions and small decor details
+  ctx.fillStyle="#7890a4";ctx.fillRect(0,54,800,4);
+  roundedRect(620,8,160,40,6,"#e7f0f2","#93afc2");
+  ctx.fillStyle="#286b62";ctx.font="bold 11px Arial";ctx.fillText("PRE-OWNED TECH",632,24);
+  ctx.fillStyle="#536b7d";ctx.font="10px Arial";ctx.fillText("TESTED • GRADED • READY",632,38);
+
+  // Floor shine and subtle tile highlights
+  ctx.save();
+  const shine=ctx.createLinearGradient(0,250,0,430);
+  shine.addColorStop(0,"#ffffff00");shine.addColorStop(1,"#ffffff24");
+  ctx.fillStyle=shine;ctx.fillRect(0,250,800,180);
+  ctx.strokeStyle="#ffffff35";ctx.lineWidth=1;
+  for(let y=280;y<430;y+=76){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(800,y);ctx.stroke()}
+  ctx.restore();
+
+  // Ceiling spotlights
+  for(const x of [120,400,680]){
+  const light=ctx.createRadialGradient(x,58,2,x,58,85);
+  light.addColorStop(0,"#fff5c955");light.addColorStop(1,"#fff5c900");
+  ctx.fillStyle=light;ctx.fillRect(x-85,58,170,100);
+  ctx.fillStyle="#f4e8c7";roundedRect(x-13,53,26,5,2,"#f4e8c7");
+ }
+
+ drawShelf(25,"MOBILE PHONES","📱","#5c99cb");
+ drawShelf(295,"GAMING","🎮","#b58cda");
+ drawShelf(565,"COMPUTING","💻","#70bda0");
+
+ // Trade-in desk
+ ctx.save();ctx.shadowColor="#18202b44";ctx.shadowBlur=8;ctx.shadowOffsetY=5;
+ const desk=ctx.createLinearGradient(65,210,65,265);
+ desk.addColorStop(0,"#b98154");desk.addColorStop(.45,"#815338");desk.addColorStop(1,"#573722");
+ roundedRect(65,210,175,48,5,desk,"#573722");
+ ctx.restore();
+ roundedRect(72,215,161,34,4,"#9b6846","#d1a078");
+ ctx.fillStyle="#fff2d9";ctx.font="bold 14px Arial";ctx.fillText("TRADE-IN DESK",85,237);
+ roundedRect(80,251,145,8,2,"#493021");
+
+ // Till counters
+ for(let i=0;i<state.tills;i++){
+  const x=475+i*95;
+  const counter=ctx.createLinearGradient(x,210,x,262);
+  counter.addColorStop(0,"#bc8a5e");counter.addColorStop(1,"#71472f");
+  ctx.save();ctx.shadowColor="#0003";ctx.shadowBlur=5;ctx.shadowOffsetY=3;
+  roundedRect(x,210,80,48,5,counter,"#5d3a27");ctx.restore();
+  roundedRect(x+10,216,60,21,4,"#263746","#d3b28d");
+  roundedRect(x+14,219,52,13,3,"#8bd4b1","#d9f5e7");
+  ctx.fillStyle="#ffffff";ctx.font="bold 11px Arial";ctx.fillText("TILL "+(i+1),x+22,251);
+ }
+ // Assistants stand behind the extra tills they operate.
+ for(let i=0;i<state.staff;i++){
+  const assigned=Number(state.staffTills[i])||0;
+  if(assigned<2||assigned>state.tills)continue;
+  const staffX=475+(assigned-1)*95+40;
+  drawPerson(staffX,190,"STAFF "+(i+1),i===0?"#3caa87":"#8b79cf",false,false);
+  ctx.fillStyle="#1c6048";ctx.font="bold 10px Arial";ctx.textAlign="center";ctx.fillText("ON DUTY",staffX,165);ctx.textAlign="left";
+ }
+
+ // Shop expansion
+ if(state.expanded){
+  const area=ctx.createLinearGradient(280,300,515,375);
+  area.addColorStop(0,"#a8d4e8");area.addColorStop(1,"#76a9c4");
+  roundedRect(280,300,235,70,7,area,"#5f91ad");
+  ctx.fillStyle="#274861";ctx.font="bold 15px Arial";ctx.fillText("EXPANDED SHOP",315,340);
+ }
+
+ // Customer and player
+ if(state.customer){
+  const isTrade=state.customer.type==="trade";
+  drawPerson(isTrade?150:570,280,state.customer.name,"#d47a4a",true,true);
+  ctx.fillStyle="#253849";ctx.font="bold 12px Arial";
+  ctx.fillText(isTrade?"TRADE-IN CUSTOMER":"SHOPPING CUSTOMER",isTrade?100:515,322);
+ }
+ drawPerson(state.player.x,state.player.y,"YOU","#2879bd",false,false);
+
+ // Temporary customers handled by automated staff remain visible in the shop
+ // while their sale or out-of-stock interaction takes place.
+ for(const visitor of storeCustomers){
+  drawPerson(visitor.x,visitor.y,visitor.name,visitor.kind==="missing"?"#bc7956":"#5c8fcb",false,true);
+  const bubbleText=visitor.message;
+  ctx.font="bold 10px Arial";
+  const bubbleW=Math.min(150,Math.max(92,ctx.measureText(bubbleText).width+16));
+  const bx=Math.max(4,Math.min(796-bubbleW,visitor.x-bubbleW/2));
+  roundedRect(bx,visitor.y-79,bubbleW,22,6,visitor.kind==="missing"?"#fff0d6":"#e5f8ed",visitor.kind==="missing"?"#d5a85e":"#70b58c");
+  ctx.fillStyle=visitor.kind==="missing"?"#784d1e":"#205c42";
+  ctx.textAlign="center";ctx.fillText(bubbleText,bx+bubbleW/2,visitor.y-65);ctx.textAlign="left";
+ }
+
+ // Soft vignette at the edges
+ const vignette=ctx.createRadialGradient(400,210,150,400,210,500);
+ vignette.addColorStop(0,"#ffffff00");vignette.addColorStop(1,"#2436481c");
+ ctx.fillStyle=vignette;ctx.fillRect(0,0,800,430);
+}
+
+function movePlayer(direction){
+ const p=state.player,step=8;
+ if(direction==="up")p.y-=step;
+ if(direction==="down")p.y+=step;
+ if(direction==="left")p.x-=step;
+ if(direction==="right")p.x+=step;
+ p.x=Math.max(18,Math.min(782,p.x));p.y=Math.max(75,Math.min(405,p.y));
+ drawShop();
+}
+
+document.addEventListener("keydown",e=>{
+ const k=e.key.toLowerCase();
+ if(["arrowup","arrowdown","arrowleft","arrowright"," "].includes(k))e.preventDefault();
+ keys[k]=true;
+ if(k==="e"&&!e.repeat&&!noticeOpen)interact();
+});
+document.addEventListener("keyup",e=>{keys[e.key.toLowerCase()]=false});
+
+function movementLoop(){
+ if(!noticeOpen){
+  if(keys.w||keys.arrowup)movePlayer("up");
+  if(keys.s||keys.arrowdown)movePlayer("down");
+  if(keys.a||keys.arrowleft)movePlayer("left");
+  if(keys.d||keys.arrowright)movePlayer("right");
+ }
+ requestAnimationFrame(movementLoop);
+}
+
+document.querySelectorAll("[data-move]").forEach(button=>{
+ const dir=button.dataset.move;
+ const stop=()=>{if(touchMoveTimer){clearInterval(touchMoveTimer);touchMoveTimer=null}};
+ button.addEventListener("pointerdown",e=>{
+  if(noticeOpen)return;
+  e.preventDefault();stop();movePlayer(dir);
+  touchMoveTimer=setInterval(()=>{if(!noticeOpen)movePlayer(dir)},110);
+ });
+ button.addEventListener("pointerup",stop);
+ button.addEventListener("pointerleave",stop);
+ button.addEventListener("pointercancel",stop);
+});
+
+// Buttons and tabs
+document.addEventListener("click",event=>{
+ const tab=event.target.closest("[data-tab]");
+ if(tab){state.currentTab=tab.dataset.tab;renderTab();return}
+ const b=event.target.closest("button[data-action]");
+ if(!b)return;
+
+ switch(b.dataset.action){
+  case "save":saveGame();break;
+  case "day":endDay();break;
+  case "call":callCustomer();break;
+  case "interact":interact();break;
+  case "inspect":inspectExterior();break;
+  case "test":runTest();break;
+  case "makeOffer":makeOffer(Number(document.getElementById("offerSlider")?.value||100));break;
+  case "finish":finishCustomer("Customer interaction finished.");break;
+  case "serveSale":serveSale();break;
+  case "buy":buyStock(Number(b.dataset.index));break;
+  case "tills":upgradeTills();break;
+  case "hireStaff":hireStaff();break;
+  case "expand":upgradeShop();break;
+  case "reset":resetGame();break;
+ }
+});
+
+document.addEventListener("change",event=>{
+ const input=event.target.closest("input[data-price-id]");
+ if(input)changePrice(Number(input.dataset.priceId),input.value);
+ const staffSelect=event.target.closest("select[data-staff-index]");
+ if(staffSelect)assignStaff(Number(staffSelect.dataset.staffIndex),staffSelect.value);
+});
+
+document.addEventListener("input",event=>{
+ const slider=event.target.closest("input[data-offer-slider]");
+ if(!slider)return;
+ const c=state.customer;
+ if(!c||c.type!=="trade")return;
+ const percent=Number(slider.value);
+ const amount=Math.round(c.suggestedOffer*percent/100);
+ const percentLabel=document.getElementById("offerPercentLabel");
+ const amountLabel=document.getElementById("offerAmountLabel");
+ const hint=document.getElementById("offerHint");
+ if(percentLabel)percentLabel.textContent=percent+"%";
+ if(amountLabel)amountLabel.textContent=money(amount);
+ if(hint){
+  const chance=percent<=75?65:percent<=100?Math.round(65+(percent-75)*.8):Math.min(98,Math.round(85+(percent-100)*(.13/15*100)));
+  hint.textContent="Estimated chance of acceptance: about "+chance+"% · Higher offers cost more.";
+ }
+});
+
+// Save and load
+function saveGame(){
+ const data={
+  cash:state.cash,reputation:state.reputation,tills:state.tills,staff:state.staff,staffTills:state.staffTills,
+  profit:state.profit,day:state.day,served:state.served,
+  inventory:state.inventory,expanded:state.expanded,nextId:state.nextId
+ };
+ try{
+  localStorage.setItem("tradeAndTillDashboardSave",JSON.stringify(data));
+  addLog("Game saved on this device.");
+  showNotice("GAME SAVED","Your progress has been saved in this browser on this device.","success","💾");
+ }catch(e){addLog("Unable to save the game in this browser.");}
+}
+
+function loadGame(){
+ try{
+  const raw=localStorage.getItem("tradeAndTillDashboardSave");
+  if(!raw)return;
+  const data=JSON.parse(raw);
+  for(const key of ["cash","reputation","tills","staff","staffTills","profit","day","served","inventory","expanded","nextId"])
+   if(data[key]!==undefined)state[key]=data[key];
+  if(!Array.isArray(state.staffTills))state.staffTills=[];
+  while(state.staffTills.length<state.staff){
+   const occupied=state.staffTills.map(Number);let till=0;
+   for(let t=2;t<=state.tills;t++){if(!occupied.includes(t)){till=t;break}}
+   state.staffTills.push(till);
+  }
+  state.staffTills=state.staffTills.slice(0,Math.min(state.staff,Math.max(0,state.tills-1)));
+  state.staff=state.staffTills.length;
+ }catch(e){console.warn("Could not load saved game.",e)}
+}
+
+function resetGame(){
+ if(!confirm("Reset the game and erase this version's saved progress?"))return;
+ localStorage.removeItem("tradeAndTillDashboardSave");
+ location.reload();
+}
+
+function updateUI(){
+ document.getElementById("cash").textContent=money(state.cash);
+ document.getElementById("rep").textContent=state.reputation;
+ document.getElementById("tills").textContent=state.tills+" / 3";
+ document.getElementById("stockCount").textContent=state.inventory.length;
+ document.getElementById("profit").textContent=money(state.profit);
+ document.getElementById("day").textContent=state.day;
+ renderCustomer();renderTab();drawShop();
+}
+
+loadGame();
+updateUI();
+scheduleCustomerArrival(11000);
+scheduleStaffSales();
+movementLoop();
+
+// Enables offline play after the first visit when hosted over HTTPS.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+ window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline setup unavailable:', err)));
+}
+</script>
+</body>
+</html>
